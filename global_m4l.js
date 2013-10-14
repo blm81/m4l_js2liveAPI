@@ -43,23 +43,25 @@ g.Easing = function(total_time, rate) {
 	this.duration = Math.floor(total_time/rate);
 	this.counter = (total_time/rate) + 1;
 	this.last_map_val = 0;
+}
 	
-	this.start_motion = function() {
+	g.Easing.prototype.start_motion = function() {
 		this.counter = 0;
 	}
+	
 	//set start val and end val
-	this.set_start_val = function(start_val) {
+	g.Easing.prototype.set_start_val = function(start_val) {
 		var sv = start_val;
 		return sv;
 	}
 	
-	this.set_end_val = function(end_val) {
+	g.Easing.prototype.set_end_val = function(end_val) {
 		var ev = end_val;
 		return ev;
 	}
 	
 	//arguments: easing_function(counter/duration, start_val, end_val), end val
-	this.move = function(easing_function, end_val) {
+	g.Easing.prototype.move = function(easing_function, end_val) {
 		var mapped_value;
 		if (this.counter < this.duration) {
 			var mapped_value = easing_function;
@@ -75,25 +77,25 @@ g.Easing = function(total_time, rate) {
 		return mapped_value;
 	}
 	
-	this.set_rate = function(new_rate) {
+	g.Easing.prototype.set_rate = function(new_rate) {
 		this.rate = new_rate;
 		this.duration = this.total_time/this.rate;
 		this.counter = (this.total_time/this.rate) + 1;
 	}
 	
-	this.linear = function( t, v1, v2 ) {
+	g.Easing.prototype.linear = function( t, v1, v2 ) {
   		return v1 + t * (v2 - v1);
 	}
 	
-	this.easeIn = function( t, v1, v2 ) {
+	g.Easing.prototype.easeIn = function( t, v1, v2 ) {
   		return v1 + (t * t * t) * (v2 - v1);
 	}
 	
-	this.easeOut = function( t, v1, v2 ) {
+	g.Easing.prototype.easeOut = function( t, v1, v2 ) {
   		return v1 + (((t-1) * (t-1) * (t-1)) + 1) * (v2 - v1);
 	}
 	
-	this.easeInOut = function( t, v1, v2 ) {
+	g.Easing.prototype.easeInOut = function( t, v1, v2 ) {
   		if ((t * 2) < 1) {
     		return v1 + ((t * 2) * (t * 2) * (t * 2)) * (v2 - v1) / 2.0;
 		}
@@ -101,7 +103,7 @@ g.Easing = function(total_time, rate) {
     		return v1 + ((t * 2 - 2) * (t * 2 - 2) * (t * 2 - 2) + 2) * (v2 - v1) / 2.0;
 		}
 	}
-}
+
 
 /*js version of transport, still a little wonky
 initialize api object: var tempo = api.get("tempo");*/
@@ -109,9 +111,10 @@ g.Transport = function(tempo) {
 	this.last_bar = 0;
 	this.last_beat = 0;
 	this.bpm_ms = 60000./tempo;
+}
 	
 	//get current time: api.call("get_current_beats_song_time");
-	this.beat_bang = function(cur_bt_st) {
+	g.Transport.prototype.beat_bang = function(cur_bt_st) {
 		var song_time = cur_bt_st.split(".");
 		var beat_change;
 			if (song_time[1] !== this.last_beat){ 
@@ -124,7 +127,7 @@ g.Transport = function(tempo) {
 		return beat_change;
 	}
 	
-	this.bar_bang = function(cur_bt_st) {
+	g.Transport.prototype.bar_bang = function(cur_bt_st) {
 		var song_time = cur_bt_st.split(".");
 		var bar_change;
 			if (song_time[0] !== this.last_bar){ 
@@ -136,4 +139,4 @@ g.Transport = function(tempo) {
 			}
 		return bar_change;
 	}
-}	
+	
