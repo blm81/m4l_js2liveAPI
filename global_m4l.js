@@ -104,6 +104,46 @@ g.Easing = function(total_time, rate) {
 		}
 	}
 
+g.ParamChange = function(devices, parameters) {
+	this.devices = devices;
+	this.parameters = parameters;
+	this.min = 0;
+	this.max = 0;
+}
+	//use parameter list to populate umenu, or print names to console
+	g.ParamChange.prototype.list_params = function(api_object) { //pass name of api object
+		api_object.goto("this_device canonical_parent devices " + this.devices);
+		var args = arrayfromargs(api_object.get("parameters"));
+		var output = ["clear"];
+		for (i = 0; i < args.length/2; i++) {
+				api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + i);
+				var param_name = api_object.get("name");
+				var item = "insert " + i + " " + param_name;
+				output.push(item);
+			}
+		var final_output = JSON.stringify(output);
+		return final_output;
+	}
+	
+	g.ParamChange.prototype.set_devices = function(device_number) {
+		this.devices = device_number;
+	}
+	
+	g.ParamChange.prototype.set_params = function(param_number) {
+		this.parameters = param_number;
+	}
+	
+	//set minimum and maximum value, use for scaling
+	g.ParamChange.prototype.set_bounds = function(api_object) {
+		api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + this.parameters);
+		this.min = api_object.get("min");
+		this.max = api_object.get("max");
+	}
+	
+	g.ParamChange.prototype.set_value = function(api_object, value) {
+		api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + this.parameters);
+		api_object.set("value", value);
+	}
 
 /*js version of transport, still a little wonky
 initialize api object: var tempo = api.get("tempo");*/
