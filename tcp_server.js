@@ -1,21 +1,30 @@
 //based on example https://gist.github.com/creationix/707146#file-chatserver-js-L2
 
-//load tcp library
-var net = require('net'),
-	clients = [];
+var net = require('net'), //load tcp library
+    conn_handler = require('./connection_handler.js'),
+	  clients = [];
 
 //start TCP Server
-net.createServer(function (socket) {
+var server = net.createServer(function (socket) {
+
+  this.on( 'connection', function(socket) {
+    console.log( socket.remoteAddress + ":" + socket.remotePort + " has connected" );
+    conn_handler.request_ident( socket );
+    /*var conn_request = {};
+    conn_request.type = "message";
+    conn_request.data = "send_identification";
+    socket.write( JSON.stringify( conn_request ) );*/
+  });
  
   //identify client
-  socket.name = socket.remoteAddress + ":" + socket.remotePort 
+  //socket.name = socket.remoteAddress + ":" + socket.remotePort;
  
   //add client to list
-  clients.push(socket);
+  //clients.push(socket);
  
   //connetion aknowledgement
-  socket.write(socket.name + "connected\n");
-  broadcast(socket.name + " connected\n", socket);
+  //socket.write(socket.name + "connected\n");
+  //broadcast(socket.name + " connected\n", socket);
  
   //handle incoming messages from clients.
   socket.on('data', function (data) {
