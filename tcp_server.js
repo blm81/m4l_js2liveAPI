@@ -7,8 +7,7 @@ var net = require('net'), //load tcp library
 //start TCP Server
 var server = net.createServer(function (socket) {
 
-  this.on( 'connection', function(socket) {
-    console.log( socket.remoteAddress + ":" + socket.remotePort + " has connected" );
+  this.once( 'connection', function(socket) {
     conn_handler.request_ident( socket );
   });
  
