@@ -5,9 +5,9 @@ var net = require('net'), //load tcp library
     msg_handler = require('./message_handler.js');
 
 //start TCP Server
-var server = net.createServer(function (socket) {
+var server = net.createServer(function ( socket ) {
 
-  this.once( 'connection', function(socket) {
+  this.once( 'connection', function( socket ) {
     conn_handler.request_ident( socket );
   });
  
@@ -21,9 +21,8 @@ var server = net.createServer(function (socket) {
   });
  
   //handle client removal
-  socket.on('end', function () {
-    conn_handler.get_clients.splice( conn_handler.get_clients.indexOf(socket), 1 );
-    console.log( socket.name + " disconnected" );
+  socket.on('end', function() {
+    conn_handler.remove_client( socket );
   });
   
   //send a message to all clients

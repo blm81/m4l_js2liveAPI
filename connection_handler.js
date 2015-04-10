@@ -45,3 +45,17 @@ exports.add_client = function( socket, name ) {
 		return JSON.stringify( outgoing );
 	}
 }
+
+exports.remove_client = function( socket ) {
+	console.log( "disconnection request: " + socket.remotePort );
+	var match_counter = 0;
+    for ( var i in clients ) {
+      if ( clients[i].conn === socket ) {
+      	console.log( clients[i].name + " disconnected" );
+        clients.splice( clients[i], 1 );
+        match_counter ++;
+      }
+    }
+    if ( match_counter == 0 )
+      console.log( "disconnecting client was not found in connection list" );
+}
