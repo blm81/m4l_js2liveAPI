@@ -1,5 +1,3 @@
-//based on example https://gist.github.com/creationix/707146#file-chatserver-js-L2
-
 var net = require('net'), //load tcp library
     conn_handler = require('./connection_handler.js'),
     msg_handler = require('./message_handler.js');
@@ -12,8 +10,15 @@ var server = net.createServer(function ( socket ) {
   });
  
   //handle incoming messages from clients.
+  //connection request = @type: "ident", @name: "client_friendly_name"
   socket.on( 'data', function ( data ) {
-    var obj = JSON.parse( data );
+    try {
+      var obj = JSON.parse( data );
+    }
+    catch ( exception ) {
+      console.log( "Json parse error: " + exception );
+      return;
+    }
     if ( obj.type === "ident" )
       socket.write( conn_handler.add_client( socket, obj.data ) );
     else
@@ -35,4 +40,4 @@ var server = net.createServer(function ( socket ) {
     console.log( message );
   }
  
-}).listen(5000);
+}).listen(1234);
