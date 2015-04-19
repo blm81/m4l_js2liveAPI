@@ -1,8 +1,14 @@
-var clients = [];
+var clients = [],
+	MessageHandler = require('./message_handler.js'),
+	msgHandler = new MessageHandler();
 
-exports.get_clients = function() {
-	return clients;
+exports.handle_incoming = function( obj ) {
+	msgHandler.handle_incoming( obj );
 }
+
+msgHandler.on( 'write', function( msg ) {
+	console.log( "test " + msg );
+});
 
 //check if the client is in the list, DEPRECATED
 var client_present = function( socket ) {
