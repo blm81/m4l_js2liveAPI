@@ -2,25 +2,30 @@ var clients = [],
 	MessageHandler = require('./message_handler.js'),
 	msgHandler = new MessageHandler();
 
-exports.handle_incoming = function( obj ) {
+//route incoming messages through message handler
+exports.handle_incoming = function( socket, obj ) {
+	obj.sender = get_name( socket );
 	msgHandler.handle_incoming( obj );
 }
 
+//send message from handler to client(s)
 msgHandler.on( 'write', function( msg ) {
-	console.log( "test " + msg );
+	//send message to correct recipients
+	for ( var i in msg.recipients ) {
+		for ( var j in clients ) {
+			if ( msg.recipients[i] == clients[j].name ) {
+				clients[j].conn.write( JSON.stringify( msg ) );
+			}
+		}
+	}
 });
 
 //check if the client is in the list, DEPRECATED
-var client_present = function( socket ) {
-	var match_counter = 0;
+var get_name = function( socket ) {
 	for ( var i in clients ) {
 		if ( clients[i].conn === socket )
-			match_counter ++;
+			return clients[i].name;
 	}
-	if ( match_counter < 1 )
-		return false;
-	else
-		return true;
 }
 
 //request that the newly connected client identify itself

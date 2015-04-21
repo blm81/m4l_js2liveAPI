@@ -21,7 +21,7 @@ var server = net.createServer(function ( socket ) {
     if ( obj.type === "ident" )
       socket.write( conn_handler.add_client( socket, obj.data ) );
     else
-      conn_handler.handle_incoming( obj );
+      conn_handler.handle_incoming( socket, obj );
   });
  
   //handle client removal
