@@ -13,6 +13,6 @@ m4l_js2liveAPI
 
 *Build Instructions*
 
-- add script folder to Max File Preferences
+- add m4l script folder to Max File Preferences
 - global_m4l.js: send "compile" message to a js object pointing to this file and you can call its functions from anywhere in your Live project
-- to run TCP server: node start <path to .js file location>/tcp_server
+- to run TCP server: node start *path to .js file location*/tcp_server
