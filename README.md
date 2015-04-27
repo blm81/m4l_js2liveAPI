@@ -1,7 +1,7 @@
 m4l_js2liveAPI
 ==============
 
-contains:
+*Contains:*
 
 - commonly used functions to interface with Ableton Live javascript api for use within max for live
 - node.js TCP server to facilitate message passing between Cinder and Max/MSP (or any TCP client)
