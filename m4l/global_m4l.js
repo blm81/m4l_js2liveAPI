@@ -1,3 +1,4 @@
+
 /* global javascript classes for max for live by Blake McConnell 2013
    can be acessed from anywhere in your live set
    make sure you send a "compile" message to this file,
@@ -113,16 +114,22 @@ g.ParamChange = function(devices, parameters) {
 	//use parameter list to populate umenu, or print names to console
 	g.ParamChange.prototype.list_params = function(api_object) { //pass name of api object
 		api_object.goto("this_device canonical_parent devices " + this.devices);
-		var args = arrayfromargs(api_object.get("parameters"));
-		var output = ["clear"];
-		for (i = 0; i < args.length/2; i++) {
-				api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + i);
-				var param_name = api_object.get("name");
-				var item = "insert " + i + " " + param_name;
-				output.push(item);
-			}
-		var final_output = JSON.stringify(output);
-		return final_output;
+		//"get" lists ids with commas between "id" and id #
+		var args = arrayfromargs( api_object.get ( "parameters" ) );
+		//divide by 2 to get total params
+		var total_params = args.length / 2;
+		var output = {};
+		//initialize umenu-loading array with "clear" message
+		output.umenu = [ "clear" ];
+		for ( i = 0; i < total_params; i++ ) {
+			api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + i);
+			//get parameter name and prepare it for umenu entry
+			var param_name = api_object.get( "name" );
+			var item = "insert " + i + " " + param_name;
+			output.umenu.push(item);
+		}
+		output = JSON.stringify( output );
+		return output;
 	}
 	
 	g.ParamChange.prototype.set_devices = function(device_number) {
