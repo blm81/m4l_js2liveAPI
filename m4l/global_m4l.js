@@ -114,19 +114,29 @@ g.ParamChange = function(devices, parameters) {
 	//use parameter list to populate umenu, or print names to console
 	g.ParamChange.prototype.list_params = function(api_object) { //pass name of api object
 		api_object.goto("this_device canonical_parent devices " + this.devices);
-		//"get" lists ids with commas between "id" and id #
 		var args = arrayfromargs( api_object.get ( "parameters" ) );
-		//divide by 2 to get total params
-		var total_params = args.length / 2;
 		var output = {};
 		//initialize umenu-loading array with "clear" message
 		output.umenu = [ "clear" ];
-		for ( i = 0; i < total_params; i++ ) {
-			api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + i);
-			//get parameter name and prepare it for umenu entry
-			var param_name = api_object.get( "name" );
-			var item = "insert " + i + " " + param_name;
-			output.umenu.push(item);
+		output.id_num = [];
+		for ( var i = 0; i < args.length; i++ ) {
+			//since "get" lists ids with commas between "id" and id #
+			//divide by 2 to get total # of params
+			if ( i < args.length / 2 ) {
+				api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + i);
+				//get parameter name and prepare it for umenu entry
+				var param_name = api_object.get( "name" );
+				var item = "insert " + i + " " + param_name;
+				output.umenu.push( item );
+			}
+			//get device's numerical id and push to id number array
+			if ( i % 2 != 0 ) {
+				var param_id = {};
+				param_id.index = Math.floor( i / 2 ); //match the index in the umenu array
+				param_id.id = args[i];
+				post( "param id: " + param_id.index + " " + param_id.id );
+				output.id_num.push( param_id );
+			}
 		}
 		output = JSON.stringify( output );
 		return output;
