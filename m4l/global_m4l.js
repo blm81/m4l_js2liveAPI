@@ -146,7 +146,7 @@ GM4L.ParamChange = function(devices, parameters) {
 		this.devices = device_number;
 	}
 	
-	GM4L.ParamChange.prototype.set_params = function(param_number) {
+	GM4L.ParamChange.prototype.set_param = function(param_number) {
 		this.parameters = param_number;
 	}
 	
