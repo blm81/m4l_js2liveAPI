@@ -105,9 +105,9 @@ GM4L.Easing = function(total_time, rate) {
 		}
 	}
 
-GM4L.ParamChange = function(devices, parameters) {
-	this.devices = devices;
-	this.parameters = parameters;
+GM4L.ParamChange = function( device ) {
+	this.devices = device;
+	this.parameters = null;
 	this.min = 0;
 	this.max = 0;
 }
