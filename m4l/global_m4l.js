@@ -146,12 +146,13 @@ GM4L.ParamChange = function(devices, parameters) {
 		this.devices = device_number;
 	}
 	
-	GM4L.ParamChange.prototype.set_param = function(param_number) {
+	GM4L.ParamChange.prototype.set_param = function( api_object, param_number ) {
 		this.parameters = param_number;
+		this.set_bounds( api_object );
 	}
 	
 	//set minimum and maximum value, use for scaling
-	GM4L.ParamChange.prototype.set_bounds = function(api_object) {
+	GM4L.ParamChange.prototype.set_bounds = function( api_object ) {
 		api_object.goto("this_device canonical_parent devices " + this.devices + " parameters " + this.parameters);
 		this.min = api_object.get("min");
 		this.max = api_object.get("max");
