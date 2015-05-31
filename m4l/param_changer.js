@@ -1,3 +1,7 @@
+/* 
+	set parameters using global m4l ParamChange
+*/
+
 var param_change = null;
 
 inlets = 1;
@@ -18,7 +22,6 @@ function anything()
 		switch( a[0] ) {
 			//list parameters for current device
 			case "list_params":
-				post( param_change.list_params( api ) );
 				var params_obj = JSON.parse( param_change.list_params( api ) )
 				for( var i = 0; i < params_obj.umenu.length; i++ )
 					outlet( 0, params_obj.umenu[i] );

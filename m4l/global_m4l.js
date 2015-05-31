@@ -1,5 +1,5 @@
 
-/* global javascript classes for max for live by Blake McConnell 2013
+/* global javascript classes for max for live by Blake McConnell 2013-15
    can be acessed from anywhere in your live set
    make sure you send a "compile" message to this file,
    then to all other js objects to initialize them within live.
@@ -105,6 +105,7 @@ GM4L.Easing = function(total_time, rate) {
 		}
 	}
 
+//change parameters of live devices
 GM4L.ParamChange = function( device ) {
 	this.devices = device;
 	this.parameters = null;
@@ -134,7 +135,6 @@ GM4L.ParamChange = function( device ) {
 				var param_id = {};
 				param_id.index = Math.floor( i / 2 ); //match the index in the umenu array
 				param_id.id = args[i];
-				post( "param id: " + param_id.index + " " + param_id.id );
 				output.id_num.push( param_id );
 			}
 		}
