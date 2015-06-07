@@ -51,7 +51,10 @@ function bang()
 
 	//if all parameters are set, output transport object
 	if ( null_count === 0 ) {
-		outlet( 0, JSON.stringify( transport_obj ) );
+		var output = {};
+		output.type = "transport";
+		output.data = transport_obj;
+		outlet( 0, JSON.stringify( output ) );
 	}
 	else
 		post( "at least one required property is not set", '\n' );
