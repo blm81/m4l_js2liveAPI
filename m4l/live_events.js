@@ -36,12 +36,41 @@ var output = {},
 function anything()
 {
 	var args = arrayfromargs( messagename, arguments );
-	switch( args[0] ) {
-		case 'beat_change':
-			post( "new beat: " + beat_change.is_event( args[1] ), '\n' );
-			break;
-		case 'bar_change':
-			post( "new beat: " + bar_change.is_event( args[1] ), '\n' );
-			break;
+
+	//first arg should be the type of input
+	switch( args[0] ) { 
+
+		case 'json':
+
+			//first, check if json is valid
+			try {
+				var json_input = JSON.parse( args[1] );
+			}
+			catch ( exception ) {
+				post( "invalid json: " + exception, '\n' );
+			}
+
+			//then, make sure json has "type" and "data" keys
+			if ( !json_input.hasOwnProperty( "type") || !json_input.hasOwnProperty( "data") ) {
+				post( "json must contain 'type' and 'data' keys", '\n');
+				return
+			}
+
+			//evaluate the json
+			switch( json_input.type ) {
+
+				//transport object
+				case 'transport':
+					var transport_obj = json_input.data;
+					//beat change event check
+					if ( beat_change.is_event( transport_obj.beat_count ) )
+						post( "beat_change", '\n');
+					//bar change event check
+					if ( bar_change.is_event( transport_obj.bar_count ) )
+						post( "bar_change", '\n');
+					break;
+			}
+
+			break; //case 'json'
 	}
 }
