@@ -51,9 +51,10 @@ function bang()
 
 	//if all parameters are set, output transport object
 	if ( null_count === 0 ) {
-		var output = {};
-		output.type = "transport";
-		output.data = transport_obj;
+		var output = {
+			type : "transport",
+			data : transport_obj
+		};
 		outlet( 0, JSON.stringify( output ) );
 	}
 	else

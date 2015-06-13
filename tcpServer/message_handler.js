@@ -27,7 +27,7 @@ MessageHandler.prototype.handle_incoming = function( obj ) {
 		recipients.push( "max" );
 		outgoing = obj;
 		outgoing.type = "from_cinder";
-		console.log( "sending message: ", obj );
+		//console.log( "sending message: ", obj );
 	}
 	//filter malformed messages
 	if ( outgoing.type != null ) {

@@ -64,10 +64,10 @@ function anything()
 					var transport_obj = json_input.data;
 					//beat change event check
 					if ( beat_change.is_event( transport_obj.beat_count ) )
-						post( "beat_change", '\n');
+						outlet(0, "beat_change" );
 					//bar change event check
 					if ( bar_change.is_event( transport_obj.bar_count ) )
-						post( "bar_change", '\n');
+						outlet(0, "bar_change" );
 					break;
 			}
 
