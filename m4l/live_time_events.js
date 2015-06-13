@@ -11,27 +11,31 @@ function MeterEvent( name )
 	var _name = name,
 		_prev_value = null;
 
-	this.get_name = function() {
+	function get_name() {
 		return this.name;
 	}
-}
 
-//true if current value is different than previous
-MeterEvent.prototype.is_event = function( value )
-{
-	if ( this._prev_value != null && value != this._prev_value ) {
-		this._prev_value = value;
-		return true;
+	//returns true if current value is different than previous
+	function is_event( value ) {
+		if ( this._prev_value != null && value != this._prev_value ) {
+			this._prev_value = value;
+			return true;
+		}
+		else {
+			this._prev_value = value;
+			return false;
+		}
 	}
-	else {
-		this._prev_value = value;
-		return false;
+
+	return {
+		get_name : get_name,
+		is_event : is_event
 	}
 }
 
 var output = {},
-	beat_change = new MeterEvent( "beat_change" ),
-	bar_change = new MeterEvent( "bar_change" );
+	beat_change = MeterEvent( "beat_change" ),
+	bar_change = MeterEvent( "bar_change" );
 
 function anything()
 {
