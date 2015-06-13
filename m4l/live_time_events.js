@@ -51,7 +51,7 @@ function anything()
 			}
 
 			//then, make sure json has "type" and "data" keys
-			if ( !json_input.hasOwnProperty( "type") || !json_input.hasOwnProperty( "data") ) {
+			if ( !json_input.hasOwnProperty( "type" ) || !json_input.hasOwnProperty( "data" ) ) {
 				post( "json must contain 'type' and 'data' keys", '\n');
 				return
 			}
