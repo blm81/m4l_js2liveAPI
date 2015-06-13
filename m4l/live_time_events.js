@@ -9,16 +9,24 @@ outlets = 1;
 function MeterEvent( name )
 {
 	var _name = name,
-		_prev_value = null;
+		_prev_value = null,
+		_callback = null;
 
 	function get_name() {
 		return this.name;
+	}
+
+	function set_callback( callback ) {
+		_callback = callback;
 	}
 
 	//returns true if current value is different than previous
 	function is_event( value ) {
 		if ( this._prev_value != null && value != this._prev_value ) {
 			this._prev_value = value;
+			if ( _callback !== null ) {
+				_callback();
+			}
 			return true;
 		}
 		else {
@@ -29,6 +37,7 @@ function MeterEvent( name )
 
 	return {
 		get_name : get_name,
+		set_callback : set_callback,
 		is_event : is_event
 	}
 }
@@ -36,6 +45,11 @@ function MeterEvent( name )
 var output = {},
 	beat_change = MeterEvent( "beat_change" ),
 	bar_change = MeterEvent( "bar_change" );
+
+beat_change.set_callback( function() {
+	post( "beat change callback", '\n' );
+	outlet( 0, "beat_change" );
+});
 
 function anything()
 {
@@ -67,8 +81,9 @@ function anything()
 				case 'transport':
 					var transport_obj = json_input.data;
 					//beat change event check
-					if ( beat_change.is_event( transport_obj.beat_count ) )
-						outlet(0, "beat_change" );
+					beat_change.is_event( transport_obj.beat_count );
+					/*if ( beat_change.is_event( transport_obj.beat_count ) )
+						outlet(0, "beat_change" );*/
 					//bar change event check
 					if ( bar_change.is_event( transport_obj.bar_count ) )
 						outlet(0, "bar_change" );
