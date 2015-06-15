@@ -34,7 +34,7 @@ function anything()
 	switch( args[0] ) {
 		case 'read':
 			//output json from config file
-			outlet( 0, "json " + load_file( args[1] ) );
+			outlet( 0, load_file( args[1] ) );
 			break;
 	}
 }

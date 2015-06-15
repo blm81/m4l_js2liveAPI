@@ -42,14 +42,18 @@ function MeterEvent( name )
 	}
 }
 
+//returns true is "type" and "data" keys found in input JSON
+function check_keys( json_input ) {
+	if ( !json_input.hasOwnProperty( "type" ) || !json_input.hasOwnProperty( "data" ) ) {
+		post( "json must contain 'type' and 'data' keys", '\n');
+		return false;
+	}
+	return true;
+}
+
 var output = {},
 	beat_change = MeterEvent( "beat_change" ),
 	bar_change = MeterEvent( "bar_change" );
-
-beat_change.set_callback( function() {
-	post( "beat change callback", '\n' );
-	outlet( 0, "beat_change" );
-});
 
 function anything()
 {
@@ -57,22 +61,28 @@ function anything()
 
 	//first arg should be the type of input
 	switch( args[0] ) { 
-
 		case 'json':
 
 			//first, check if json is valid
 			try {
-				var json_input = JSON.parse( args[1] );
+				var json_input = JSON.parse( args[1], function ( key, value ) {
+				if ( value && ( typeof value === 'string' ) && value.indexOf( "function" ) === 0 ) {
+				    // we can only pass a function as string in JSON ==> doing a real function
+				    var func = new Function('return ' + value)();
+        			return func;
+				}
+				      
+				return value;
+				});
 			}
 			catch ( exception ) {
 				post( "invalid json: " + exception, '\n' );
+				return;
 			}
 
 			//then, make sure json has "type" and "data" keys
-			if ( !json_input.hasOwnProperty( "type" ) || !json_input.hasOwnProperty( "data" ) ) {
-				post( "json must contain 'type' and 'data' keys", '\n');
-				return
-			}
+			if ( !check_keys( json_input ) )
+				return;
 
 			//evaluate the json
 			switch( json_input.type ) {
@@ -81,13 +91,34 @@ function anything()
 				case 'transport':
 					var transport_obj = json_input.data;
 					//beat change event check
-					beat_change.is_event( transport_obj.beat_count );
-					/*if ( beat_change.is_event( transport_obj.beat_count ) )
-						outlet(0, "beat_change" );*/
+					if ( beat_change.is_event( transport_obj.beat_count ) )
+						outlet(0, "beat_change" );
 					//bar change event check
 					if ( bar_change.is_event( transport_obj.bar_count ) )
 						outlet(0, "bar_change" );
-					break;
+					break; //case 'transport'
+
+				//external configuration
+				case 'config':
+					var obj_array = json_input.data;
+					//loop through array of objects where data = the callback function
+					for ( var i in obj_array ) {
+
+						//make sure each object has "type" and "data" keys
+						if ( !check_keys( obj_array[i] ) )
+							continue;
+
+						switch( obj_array[i].type ) {
+							//set meter event callbacks
+							case 'bar_callback':
+								bar_change.set_callback( obj_array[i].data );
+								break;
+							case 'beat_callback':
+								beat_change.set_callback( obj_array[i].data );
+								break;
+						}
+					}
+					break; //case 'config'
 			}
 
 			break; //case 'json'
