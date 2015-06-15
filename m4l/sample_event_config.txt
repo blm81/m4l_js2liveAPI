@@ -1,0 +1,19 @@
+//Sample configuration for config_loader.js, use everything below this line as a template
+{ 
+	"type" : "config",
+	"data" : 
+		[
+			{
+				"type" : "beat_callback",
+				"data" : "function() { 
+							post( 'beat callback', '\\n' );
+						}"
+			},
+			{
+				"type" : "bar_callback",
+				"data" : "function() { 
+							post( 'bar callback', '\\n' );
+						}"
+			}
+		] 
+}
