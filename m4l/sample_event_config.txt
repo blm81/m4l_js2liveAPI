@@ -1,4 +1,6 @@
-//Sample configuration for config_loader.js, use everything below this line as a template
+//Sample configuration for config_loader.js
+//any of the _global_ max methods are fair game here
+//use everything below this line as a template
 { 
 	"type" : "config",
 	"data" : 
@@ -7,12 +9,14 @@
 				"type" : "beat_callback",
 				"data" : "function() { 
 							post( 'beat callback', '\\n' );
+							messnamed( 'receive_object', 'beat changed' );
 						}"
 			},
 			{
 				"type" : "bar_callback",
 				"data" : "function() { 
 							post( 'bar callback', '\\n' );
+							messnamed( 'receive_object', 'bar changed' );
 						}"
 			}
 		] 
