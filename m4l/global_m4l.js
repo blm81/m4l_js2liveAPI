@@ -8,6 +8,7 @@
 */
 
 GM4L = new Global("m4l");
+autowatch = 1;
 
 //performs a drunk walk, arguments are min and max of output
 GM4L.Drunk = function(min_out, max_out) {
@@ -104,6 +105,49 @@ GM4L.Easing = function(total_time, rate) {
     		return v1 + ((t * 2 - 2) * (t * 2 - 2) * (t * 2 - 2) + 2) * (v2 - v1) / 2.0;
 		}
 	}
+
+/* get JSON object containing an array of track objects 
+   that each have an array of clip objects */
+GM4L.get_song_info = function( api_object ) {
+
+	var song_info = {
+		tracks : []
+	};
+
+	//get tracks
+	api_object.goto( "live_set" );
+	var tracks = arrayfromargs( api_object.get( "tracks" ) );
+	//loop through half the length as "id" and "number" each have own array index
+	for ( var i = 0; i < tracks.length / 2; i++ ) {
+		api_object.goto( "live_set tracks " + i );
+		//make track object
+		var track = {
+			index : i,
+			name : api_object.get( "name" ),
+			clips : []
+		};
+
+		//get clips
+		api_object.goto( "live_set tracks " + i );
+		var clips = arrayfromargs( api_object.get( "clip_slots" ) );
+		for ( var j =0; j < clips.length / 2; j++ ) {
+			api_object.goto( "live_set tracks " + i + " clip_slots " + j );
+			
+			//check if clip slot actally has a clip, if so, add
+			if ( api_object.get( "has_clip" ) == 1 ) {
+				api_object.goto( "live_set tracks " + i + " clip_slots " + j + " clip" );
+				var clip = {
+					index : j,
+					name : api_object.get( "name" )
+				}
+				track.clips.push( clip );
+			}
+		}
+		song_info.tracks.push( track );
+	}
+
+	return JSON.stringify( song_info );
+}
 
 //change parameters of live devices
 GM4L.ParamChange = function( device ) {
