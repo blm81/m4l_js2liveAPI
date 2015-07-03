@@ -23,7 +23,7 @@ function anything()
 	var args = arrayfromargs( messagename, arguments ),
 		valid_arg = 0;
 
-	for ( var i = 0; i < args.length; i += 2 ) {
+	for ( var i = 0, il = args.length; i < il; i += 2 ) {
 
 		//loop through properties
 		for ( var prop in transport_obj ) {

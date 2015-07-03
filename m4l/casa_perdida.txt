@@ -1,0 +1,18 @@
+{ 
+	"type" : "config",
+	"data" : 
+		[
+			{
+				"type" : "beat_callback",
+				"data" : "function() { 
+							messnamed( 'time_ev', '{ \"type\" : \"time_ev\", \"data\" : \"beat\" }' );
+						}"
+			},
+			{
+				"type" : "bar_callback",
+				"data" : "function() { 
+							messnamed( 'time_ev', '{ \"type\" : \"time_ev\", \"data\" : \"beat\" }' );
+						}"
+			}
+		] 
+}

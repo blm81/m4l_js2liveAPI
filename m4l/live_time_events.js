@@ -102,7 +102,7 @@ function anything()
 				case 'config':
 					var obj_array = json_input.data;
 					//loop through array of objects where data = the callback function
-					for ( var i in obj_array ) {
+					for ( var i = 0, il = obj_array.length; i < il; i++ ) {
 
 						//make sure each object has "type" and "data" keys
 						if ( !check_keys( obj_array[i] ) )

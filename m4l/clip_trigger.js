@@ -17,8 +17,41 @@ function anything()
 		//get an object with track/clip info about live set
 		case 'get_song_info':
 
-			outlet( 0, GM4L.get_song_info( live_api ) );
+			var str_from_global = GM4L.get_song_info( live_api ),
+				event_obj = null;
+
+			try {
+				song_info = JSON.parse( str_from_global );
+			}
+			catch( exception ) {
+				post( "JSON parse exception: ", exception );
+			}
+			
+			//print out object contents
+			for ( var i = 0, il = song_info.tracks.length; i < il; i++ ) {
+				post( "track ", song_info.tracks[i].index, " ", song_info.tracks[i].name, '\n' );
+				for ( var j = 0, jl = song_info.tracks[i].clips.length; j < jl; j++ ) {
+					post( "clip ", song_info.tracks[i].clips[j].index, " ", song_info.tracks[i].clips[j].name, '\n' );
+				}
+			}
+
+		case 'random':
+			post( "random: ", random_range( 0, 5 ), '\n' );
 
 			break; //get_song_info
+
+		case 'event':
+			try {
+				event_obj = JSON.parse( args[1] );
+			}
+			catch ( exception ) {
+				post( "JSON parse exception: ", exception );
+			}
+			post( "event is: ", event_obj.type, " : ", event_obj.data, '\n' );
+			break; //time_ev
 	}
+}
+
+function random_range( upper, lower ) {
+	return Math.floor( Math.random() * ( upper - lower + 1) ) + lower;
 }
