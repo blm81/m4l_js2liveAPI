@@ -10,15 +10,16 @@ var live_api = new LiveAPI( "live_set" ),
 
 function anything()
 {
-	var args = arrayfromargs( messagename, arguments );
+	var args = arrayfromargs( messagename, arguments ),
+		str_from_global = "",
+		event_obj = null;
 
 	switch ( args[0] ) {
 
 		//get an object with track/clip info about live set
 		case 'get_song_info':
 
-			var str_from_global = GM4L.get_song_info( live_api ),
-				event_obj = null;
+			var str_from_global = GM4L.get_song_info( live_api );
 
 			try {
 				song_info = JSON.parse( str_from_global );
@@ -41,14 +42,38 @@ function anything()
 			break; //get_song_info
 
 		case 'event':
+
 			try {
 				event_obj = JSON.parse( args[1] );
 			}
 			catch ( exception ) {
 				post( "JSON parse exception: ", exception );
+				return;
 			}
-			post( "event is: ", event_obj.type, " : ", event_obj.data, '\n' );
+			
+			switch( event_obj.type ) {
+
+				//time (meter) based events
+				case 'time_ev':
+					trigger_clip( event_obj.data );
+					break; //time_ev
+			}
+
 			break; //time_ev
+	}
+}
+
+function trigger_clip( str_cue ) {
+
+	switch( str_cue ) {
+
+		case 'beat':
+			post( "beat event", '\n' );
+			break; //beat
+
+		case 'bar':
+			post( "bar event", '\n' );
+			break; //bar
 	}
 }
 

@@ -11,7 +11,7 @@
 			{
 				"type" : "bar_callback",
 				"data" : "function() { 
-							messnamed( 'time_ev', '{ \"type\" : \"time_ev\", \"data\" : \"beat\" }' );
+							messnamed( 'time_ev', '{ \"type\" : \"time_ev\", \"data\" : \"bar\" }' );
 						}"
 			}
 		] 
