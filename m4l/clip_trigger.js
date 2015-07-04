@@ -6,7 +6,8 @@ inlets = 1;
 outlets = 1;
 
 var live_api = new LiveAPI( "live_set" ),
-	song_info = null;
+	song_info = null,
+	random_clip =  RandomClip( live_api, 1, [ 5 ], [ 2, 9 ] );
 
 function anything()
 {
@@ -68,7 +69,8 @@ function trigger_clip( str_cue ) {
 	switch( str_cue ) {
 
 		case 'beat':
-			post( "beat event", '\n' );
+			//post( "beat event", '\n' );
+			random_clip.update();
 			break; //beat
 
 		case 'bar':
@@ -77,6 +79,51 @@ function trigger_clip( str_cue ) {
 	}
 }
 
-function random_range( upper, lower ) {
-	return Math.floor( Math.random() * ( upper - lower + 1) ) + lower;
+/*
+	fire a random clip
+
+	@param api_obj		{obj}		api instance
+	@param track_num: 	{num} 		track number
+	@param tick_range: 	{array} 	low [0] and high [1] range for fire time
+									if only 1 arg, then clip will fire at that interval
+	@param out_range: 	{array} 	output range low [0] high [1]
+*/
+function RandomClip( api_obj, track_num, tick_range, output_range ) {
+
+	var _counter = 0,
+		_ticks,
+		_output;
+
+	set_ticks();
+	set_output();
+
+	function set_ticks() {
+
+		if ( tick_range[1] === undefined )
+			_ticks = tick_range[0];
+		else 
+			_ticks = random_range( tick_range[0], tick_range[1] );
+		post( "ticks set to: ", _ticks );
+	}
+
+	function set_output() {
+		_output = random_range( output_range[0], output_range[1] );
+	}
+
+	function update() {
+
+		if( ++_counter === _ticks ) {
+			post( "fire track ", track_num, " clip ", _output, '\n' );
+			set_output();
+			_counter = 0;
+		}
+	}
+
+	function random_range( upper, lower ) {
+		return Math.floor( Math.random() * ( upper - lower + 1) ) + lower;
+	}
+
+	return {
+		update : update
+	}
 }
