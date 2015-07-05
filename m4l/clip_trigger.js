@@ -7,7 +7,7 @@ outlets = 1;
 
 var live_api = new LiveAPI( "live_set" ),
 	song_info = null,
-	random_clip =  RandomClip( live_api, 1, [ 5 ], [ 2, 9 ] );
+	random_clip =  RandomClip( live_api, 2, [ 11 ], [ -1, 3 ] );
 
 function anything()
 {
@@ -36,11 +36,6 @@ function anything()
 					post( "clip ", song_info.tracks[i].clips[j].index, " ", song_info.tracks[i].clips[j].name, '\n' );
 				}
 			}
-
-		case 'random':
-			post( "random: ", random_range( 0, 5 ), '\n' );
-
-			break; //get_song_info
 
 		case 'event':
 
@@ -113,12 +108,16 @@ function RandomClip( api_obj, track_num, tick_range, output_range ) {
 	function update() {
 
 		if( ++_counter === _ticks ) {
-			post( "fire track ", track_num, " clip ", _output, '\n' );
+			//select and fire clip
+			api_obj.goto( "live_set tracks " + track_num + " clip_slots " + _output );
+			api_obj.call( "fire" );
+			//reset for next round
 			set_output();
 			_counter = 0;
 		}
 	}
 
+	//get random int within a specified range
 	function random_range( upper, lower ) {
 		return Math.floor( Math.random() * ( upper - lower + 1) ) + lower;
 	}
