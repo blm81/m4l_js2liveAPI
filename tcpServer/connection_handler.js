@@ -11,8 +11,8 @@ exports.handle_incoming = function( socket, obj ) {
 //send message from handler to client(s)
 msgHandler.on( 'write', function( msg ) {
 	//send message to correct recipients
-	for ( var i in msg.recipients ) {
-		for ( var j in clients ) {
+	for ( var i = 0, il = msg.recipients.length; i < il; i++ ) {
+		for ( var j = 0, jl = clients.length; j < jl; j++ ) {
 			if ( msg.recipients[i] == clients[j].name ) {
 				clients[j].conn.write( JSON.stringify( msg ) );
 			}
@@ -22,7 +22,7 @@ msgHandler.on( 'write', function( msg ) {
 
 //check if the client is in the list, DEPRECATED
 var get_name = function( socket ) {
-	for ( var i in clients ) {
+	for ( var i = 0, il = clients.length; i < il; i++ ) {
 		if ( clients[i].conn === socket )
 			return clients[i].name;
 	}
@@ -53,7 +53,7 @@ exports.add_client = function( socket, name ) {
 
 exports.remove_client = function( socket ) {
 	var match_counter = 0;
-    for ( var i in clients ) {
+    for ( var i = 0, il = clients.length; i < il; i++ ) {
       if ( clients[i].conn === socket ) {
       	console.log( clients[i].name + " disconnected" );
         clients.splice( clients[i], 1 );
