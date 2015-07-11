@@ -123,7 +123,7 @@ GM4L.get_song_info = function( api_object ) {
 		//make track object
 		var track = {
 			index : i,
-			name : api_object.get( "name" ),
+			name : api_object.get( "name" )[0],
 			clips : []
 		};
 
@@ -138,7 +138,7 @@ GM4L.get_song_info = function( api_object ) {
 				api_object.goto( "live_set tracks " + i + " clip_slots " + j + " clip" );
 				var clip = {
 					index : j,
-					name : api_object.get( "name" )
+					name : api_object.get( "name" )[0]
 				}
 				track.clips.push( clip );
 			}
