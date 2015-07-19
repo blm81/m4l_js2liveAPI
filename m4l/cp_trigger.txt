@@ -1,0 +1,15 @@
+{
+	"type" : "trigger",
+	"data" : 
+	[
+		{
+			"type" : "random_fire",
+			"data" : {
+				"trigger" : "beat",
+				"tracks" : [ 2, 5, 6 ],
+				"tick_range" : [ 11 ],
+				"output_range" : null
+			}
+		}
+	]
+}
