@@ -6,7 +6,6 @@ inlets = 1;
 outlets = 1;
 
 var live_api = new LiveAPI( "live_set" ),
-	song_info = null,
 	random_clip =  GM4L.RandomFire( live_api, [ 2, 5, 6 ], [ 11 ] );
 
 function anything()
@@ -46,8 +45,8 @@ function anything()
 
 function get_song_info() {
 
-	var str_from_global = GM4L.get_song_info( live_api );
-	post( "song info: ", str_from_global );
+	var str_from_global = GM4L.get_song_info( live_api ),
+		song_info;
 
 	try {
 		song_info = JSON.parse( str_from_global );
