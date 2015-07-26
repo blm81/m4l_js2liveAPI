@@ -211,7 +211,7 @@ GM4L.ParamChange = function( device ) {
 	fire a random clip
 
 	@param api_obj		{obj}		api instance
-	@param api_obj		{string}	cue to trigger clip update
+	@param trigger		{string}	cue to trigger clip update
 	@param track_num: 	{array} 	track number(s), if multiple, will choose random track
 	@param tick_range: 	{array} 	low [0] and high [1] range for fire time
 									if only 1 arg, then clip will fire at that interval

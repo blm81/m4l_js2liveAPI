@@ -1,0 +1,25 @@
+/*
+	sample configuration for trigger events: an array of trigger objects
+	type : "random_fire", data:
+		@param trigger		{string}	cue to trigger clip update
+		@param track_num: 	{array} 	track number(s), if multiple, will choose random track
+		@param tick_range: 	{array} 	low [0] and high [1] range for fire time
+										if only 1 arg, then clip will fire at that interval
+		@param out_range: 	{array} 	optional *breaks random track* output range low [0] high [1]
+*/
+
+{
+	"type" : "trigger",
+	"data" : 
+	[
+		{
+			"type" : "random_fire",
+			"data" : {
+				"trigger" : "beat",
+				"tracks" : [ 1, 2, 3, 5, 7 ],
+				"tick_range" : [ 4, 8 ],
+				"output_range" : [ 0, 5 ]
+			}
+		}
+	]
+}
