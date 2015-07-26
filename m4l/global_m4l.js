@@ -211,17 +211,18 @@ GM4L.ParamChange = function( device ) {
 	fire a random clip
 
 	@param api_obj		{obj}		api instance
+	@param api_obj		{string}	cue to trigger clip update
 	@param track_num: 	{array} 	track number(s), if multiple, will choose random track
 	@param tick_range: 	{array} 	low [0] and high [1] range for fire time
 									if only 1 arg, then clip will fire at that interval
 	@param out_range: 	{array} 	optional *breaks random track* output range low [0] high [1]
 */
-GM4L.RandomFire = function( api_obj, tracks, tick_range, output_range ) {
+GM4L.RandomFire = function( api_obj, trigger, tracks, tick_range, output_range ) {
 
 	var _counter = 0,
 		_ticks,
-		_track,
 		_output,
+		_trigger = trigger,
 		_song_info = null;
 
 	set_all();
@@ -243,6 +244,8 @@ GM4L.RandomFire = function( api_obj, tracks, tick_range, output_range ) {
 	function set_output() {
 		_output = random_range( output_range[0], output_range[1] );
 	}
+
+	function get_trigger() { return _trigger; }
 
 	function set_all() {
 		set_ticks();
@@ -293,6 +296,7 @@ GM4L.RandomFire = function( api_obj, tracks, tick_range, output_range ) {
 	}
 
 	return {
+		get_trigger : get_trigger,
 		update : update
 	}
 }

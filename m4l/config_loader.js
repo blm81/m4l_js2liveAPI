@@ -32,8 +32,11 @@ function anything()
 	var args = arrayfromargs( messagename, arguments );
 
 	switch( args[0] ) {
+
+		//output json from config file
 		case 'read':
-			//output json from config file
+			
+			//optional third argument to route output
 			if ( args[2] !== undefined )
 				outlet( 0, args[2], load_file( args[1] ) );
 			else 

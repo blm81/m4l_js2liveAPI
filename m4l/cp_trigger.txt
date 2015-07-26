@@ -7,8 +7,7 @@
 			"data" : {
 				"trigger" : "beat",
 				"tracks" : [ 2, 5, 6 ],
-				"tick_range" : [ 11 ],
-				"output_range" : null
+				"tick_range" : [ 11 ]
 			}
 		}
 	]
