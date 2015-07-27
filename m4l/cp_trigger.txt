@@ -9,6 +9,14 @@
 				"tracks" : [ 2, 5, 6 ],
 				"tick_range" : [ 11 ]
 			}
+		},
+		{
+			"type" : "random_fire",
+			"data" : {
+				"trigger" : "bar",
+				"tracks" : [ 3, 4 ],
+				"tick_range" : [ 2 ]
+			}
 		}
 	]
 }

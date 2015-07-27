@@ -134,20 +134,12 @@ function add_trigger( arr_in ) {
 	}
 }
 
+//update RandomFire objects if they match current event cue
 function trigger_clip( str_cue ) {
 
-	switch( str_cue ) {
-
-		case 'beat':
-
-			for ( var i = 0, il = random_clips.length; i < il; i++ ) {
-				if ( random_clips[i].get_trigger() === 'beat' )
-					random_clips[i].update();
-			}
-			break; //beat
-
-		case 'bar':
-			post( "bar event", '\n' );
-			break; //bar
+	for ( var i = 0, il = random_clips.length; i < il; i++ ) {
+		if ( random_clips[i].get_trigger() === str_cue ) {
+			random_clips[i].update();
+		}
 	}
 }
