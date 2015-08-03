@@ -18,7 +18,9 @@ function anything()
 		case 'fire_video':
 
 			output.type = "fire_video";
-			output.data = parseInt( args[1] );
+			output.data = {};
+			output.data.idx = +args[1];		//the index of the video in directory
+			output.data.dir = args[2];		//name of video directory
 			messnamed( send_to, JSON.stringify( output ) );
 	}
 }
