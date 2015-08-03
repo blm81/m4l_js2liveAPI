@@ -20,7 +20,8 @@ MessageHandler.prototype.handle_incoming = function( obj ) {
 		recipients.push( "cinder" );
 		outgoing.type = "from_max";
 		outgoing.data = obj.data;
-		outgoing.data_type = "float";
+		if ( obj.data_type )
+			outgoing.data_type = obj.data_type;
 	}
 	//handle messages with destination max
 	else if ( obj.type == "to_max" ) {
