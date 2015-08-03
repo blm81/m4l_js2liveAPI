@@ -6,7 +6,7 @@ inlets = 1;
 outlets = 1;
 autowatch = 1;
 
-var send_to = "to_server";	//name of receive object
+var send_to = "to_server";					//name of receive object
 
 function anything()
 {
