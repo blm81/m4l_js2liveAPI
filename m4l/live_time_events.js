@@ -6,11 +6,11 @@ inlets = 1;
 outlets = 1;
 
 //change in bar or beat
-function MeterEvent( name )
+function MeterEvent( name, callback )
 {
 	var _name = name,
 		_prev_value = null,
-		_callback = null;
+		_callback = callback;
 
 	function get_name() {
 		return this.name;
@@ -52,8 +52,8 @@ function check_keys( json_input ) {
 }
 
 var output = {},
-	beat_change = MeterEvent( "beat_change" ),
-	bar_change = MeterEvent( "bar_change" );
+	beat_change = null,
+	bar_change = null;
 
 function anything()
 {
@@ -91,10 +91,10 @@ function anything()
 				case 'transport':
 					var transport_obj = json_input.data;
 					//beat change event check
-					if ( beat_change.is_event( transport_obj.beat_count ) )
+					if ( beat_change !== null && beat_change.is_event( transport_obj.beat_count ) )
 						outlet(0, "beat_change" );
 					//bar change event check
-					if ( bar_change.is_event( transport_obj.bar_count ) )
+					if ( bar_change !== null && bar_change.is_event( transport_obj.bar_count ) )
 						outlet(0, "bar_change" );
 					break; //case 'transport'
 
@@ -111,16 +111,15 @@ function anything()
 						switch( obj_array[i].type ) {
 							//set meter event callbacks
 							case 'bar_callback':
-								bar_change.set_callback( obj_array[i].data );
+								bar_change = MeterEvent( "bar_change", obj_array[i].data );
 								break;
 							case 'beat_callback':
-								beat_change.set_callback( obj_array[i].data );
+								beat_change = MeterEvent( "beat_change", obj_array[i].data );
 								break;
 						}
 					}
 					break; //case 'config'
 			}
-
 			break; //case 'json'
 	}
 }
