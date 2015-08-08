@@ -19,8 +19,10 @@ function anything()
 
 			output.type = "fire_video";
 			output.data = {};
-			output.data.idx = +args[1];		//the index of the video in directory
-			output.data.dir = args[2];		//name of video directory
+			output.data.dir = args[1];		//name of video directory
+			output.data.idx = +args[2];		//the index of the video in directory
 			messnamed( send_to, JSON.stringify( output ) );
+
+		break; //fire_video
 	}
 }
