@@ -33,7 +33,12 @@ MessageHandler.prototype.handle_incoming = function( obj ) {
 	//filter malformed messages
 	if ( outgoing.type != null ) {
 		outgoing.recipients = recipients;
-		this.write( outgoing );
+		try {
+			this.write( outgoing );
+		}
+		catch ( exception ) {
+			console.log( "socket write exception: ", exception );
+		}
 	}
 }
 
