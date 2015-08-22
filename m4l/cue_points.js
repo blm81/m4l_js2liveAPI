@@ -9,7 +9,8 @@ autowatch = 1;
 var api_track = new LiveAPI( get_cuepoint_info ),	//track observer for cuepoints
 	api_clip = new LiveAPI(),						//for getting info on clips
 	api_time = new LiveAPI( "live_set" ),			//for getting current time in beats
-	cue_points;										//array of cue objects
+	cue_points,										//array of cue objects
+	mode = null;									//specify output mode
 
 //set to observe cue points in track
 api_track.path = "live_set";
@@ -46,6 +47,13 @@ function anything()
 
 	switch( args[0] ) {
 
+		case 'set_mode':
+
+			mode = args[1];
+			post( "mode is: ", mode, '\n' );
+
+		break; //set_mode
+
 		case 'time_ev':
 
 			try {
@@ -61,14 +69,32 @@ function anything()
 				//compare to cue points, if match, then send fire message to server
 				for ( var i = 0, il = cue_points.length; i < il; i++ ) {
 					if( song_time === +cue_points[i].time ) {
-						var name_str = cue_points[i].name.toString();
-						output = name_str.split( " " );
-						//TO DO: abstract this to accomodate different messages
-						outlet( 0, "fire_video", output[0], output[1] );
+						if( mode !== null ) {
+							switch( mode ) {
+								case 'single_video': 
+									fire_single_video( cue_points[i] );
+								break; //single_video
+
+								case 'pair_videos':
+									fire_pair_videos( cue_points[i] );
+								break; //pair videos
+								default:
+									post( "the cue point event mode set is not valid", '\n' );
+								break;
+							}
+						}
+						else 
+							post( "cue point event output mode is not set", '\n' );
 					}
 				}
 			}
 
 		break; //time_ev
 	}
+}
+
+function fire_single_video( cue_point ) {
+	var name_str = cue_point.name.toString();
+	output = name_str.split( " " );
+	outlet( 0, "fire_video", output[0], output[1] );
 }
