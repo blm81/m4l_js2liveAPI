@@ -72,11 +72,11 @@ function anything()
 						if( mode !== null ) {
 							switch( mode ) {
 								case 'single_video': 
-									fire_single_video( cue_points[i] );
+									fire_videos( cue_points[i], "fire_video" );
 								break; //single_video
 
 								case 'pair_videos':
-									fire_pair_videos( cue_points[i] );
+									fire_videos( cue_points[i], "fire_pair" );
 								break; //pair videos
 								default:
 									post( "the cue point event mode set is not valid", '\n' );
@@ -93,8 +93,8 @@ function anything()
 	}
 }
 
-function fire_single_video( cue_point ) {
+function fire_videos( cue_point, mode_id ) {
 	var name_str = cue_point.name.toString();
 	output = name_str.split( " " );
-	outlet( 0, "fire_video", output[0], output[1] );
+	outlet( 0, mode_id, output[0], output[1] );
 }
