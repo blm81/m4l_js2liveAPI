@@ -16,6 +16,14 @@ function anything()
 
 	switch( args[0] ) { 
 
+		case 'alpha_mod':
+
+			output = {};
+			output.type = "set_alpha";
+			output.data = +args[1].toFixed( 3 );
+
+		break; //alpha_mod
+
 		case 'fire_video':
 
 			output = {};
