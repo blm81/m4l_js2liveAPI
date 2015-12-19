@@ -39,15 +39,17 @@ GM4L.Drunk = function(min_out, max_out) {
 	}
 
 //implementation of common easing functions
-GM4L.Easing = function(total_time, rate) {
+GM4L.Easing = function( total_time, rate, start_val, end_val ) {
 	this.total_time = total_time;
 	this.rate = rate; //rate of bangs sent to js object
 	this.duration = Math.floor(total_time/rate);
 	this.counter = (total_time/rate) + 1;
 	this.last_map_val = 0;
+	this.start_val = start_val;
+	this.end_val = end_val;
 }
 	
-	GM4L.Easing.prototype.start_motion = function() {
+	GM4L.Easing.prototype.start = function() {
 		this.counter = 0;
 	}
 	
@@ -63,14 +65,14 @@ GM4L.Easing = function(total_time, rate) {
 	}
 	
 	//arguments: easing_function(counter/duration, start_val, end_val), end val
-	GM4L.Easing.prototype.move = function(easing_function, end_val) {
+	GM4L.Easing.prototype.move = function( easing_function ) {
 		var mapped_value;
 		if (this.counter < this.duration) {
-			var mapped_value = easing_function;
+			mapped_value = easing_function( this.counter / this.duration, this.start_val, this.end_val );
 			this.counter ++;
 		}
 		else if (this.counter == this.duration) {
-			mapped_value = end_val;
+			mapped_value = this.end_val;
 			this.last_map_val = mapped_value;
 		}
 		else {
