@@ -57,17 +57,6 @@ GM4L.Easing = function( total_time, rate, start_val, end_val ) {
 		this.counter = 0;
 	}
 	
-	//set start val and end val
-	GM4L.Easing.prototype.set_start_val = function(start_val) {
-		var sv = start_val;
-		return sv;
-	}
-	
-	GM4L.Easing.prototype.set_end_val = function(end_val) {
-		var ev = end_val;
-		return ev;
-	}
-	
 	//arguments: easing_function(counter/duration, start_val, end_val), end val
 	GM4L.Easing.prototype.move = function( easing_function ) {
 		var mapped_value;
