@@ -11,31 +11,35 @@ GM4L = new Global("m4l");
 autowatch = 1;
 
 //performs a drunk walk, arguments are min and max of output
-GM4L.Drunk = function(min_out, max_out) {
-	this.prev_val = (min_out + max_out)/2;
+GM4L.Drunk = function( min_out, max_out ) {
+	this.prev_val = ( min_out + max_out ) / 2;
 	this.min_out = min_out;
 	this.max_out = max_out;
+	this.sim_noise = new gp.SimplexNoise();
 }
 	//arguments set max and min step size
-	GM4L.Drunk.prototype.step = function(min_step, max_step) {
-		sim_noise = new gp.SimplexNoise();
-		var new_val;
-		var rand_val = sim_noise.noise(1., 1.) * (max_step - min_step + 1) + max_step;
-		if (rand_val + this.prev_val > this.min_out && rand_val + this.prev_val < this.max_out) {
-			new_val = rand_val + this.prev_val;
-		}
-		else {
-			rand_val = rand_val * -1;
-			new_val = rand_val + this.prev_val;
-		}
-		if (new_val < this.min_out) {
-			new_val = min_out;
-		}
-		else if (new_val > this.max_out) {
-			new_val = max_out;
-		}
-		this.prev_val = new_val;
-		return new_val;
+	GM4L.Drunk.prototype.step = function( min_step, max_step ) {
+		var current_val,
+			today = new Date(),
+			today_ms = today.getTime(),
+			noise = this.sim_noise.noise( today_ms, today_ms ),
+			rand_val = noise * ( max_step - min_step ) + min_step,
+			sign = noise && noise / Math.abs( noise );  //TODO move this to its own function
+		rand_val = rand_val * sign; 				    //give random val the sign of the seed
+		
+		//keep values from getting stuck at the edges of range
+        if ( rand_val + this.prev_val < this.min_out || rand_val + this.prev_val > this.max_out )
+            rand_val = rand_val * -1;
+        current_val = rand_val + this.prev_val;
+        
+        //make sure value does not exceed bounds of range
+        if ( current_val < this.min_out )
+            current_val = this.min_out;
+        else if ( current_val > this.max_out )
+            current_val = this.max_out;
+        
+        this.prev_val = current_val; //keep track of previous value
+		return current_val;
 	}
 
 //implementation of common easing functions
