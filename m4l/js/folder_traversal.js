@@ -19,18 +19,18 @@ function anything()
 			post( "opening folder: " + a[1] + '\n' );
 			folder = new Folder( a[1] );
 			folder.typelist = [ "AIFF" ];
-			objOut.files = [];
+			objOut.filenames = [];
 
 			while ( !folder.end ) {
 				//filter out empty string
 				//TODO figure out why this is happening
 				if ( folder.filename !== "" ) {
-			    	objOut.files.push( folder.filename );
+			    	objOut.filenames.push( folder.filename );
 				}
 			    folder.next();
 			}
 
-			outlet( 0, JSON.stringify( objOut ));
+			outlet( 0, "ft_json", JSON.stringify( objOut ));
 
 			break;
 
