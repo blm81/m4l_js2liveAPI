@@ -6,8 +6,10 @@ inlets = 1;
 outlets = 1;
 
 var fromJson,
+	folderPath,
 	regexMatch,
-	filtered;
+	filtered,
+	playingIndex = 0;
 
 function anything()
 {
@@ -15,6 +17,7 @@ function anything()
 
 	switch( a[0] ) {
 
+		//parse json from folder_traversal.js
 		case "ft_json":
 			try {
 				fromJson = JSON.parse( a[1] );
@@ -24,6 +27,18 @@ function anything()
 			}
 			break;
 
+		//set the folder path to files to play
+		case "set_folder":
+			if ( a[1] ) {
+				folderPath = a[1] + "/";
+			}
+			else {
+				post( "folder path must be provided" );
+				return;
+			}
+			break;
+
+		//filter list of files based on supplied string
 		case "filter":
 			//ensure that string to match in filenames has been provided
 			if ( a[1] ) {
@@ -41,9 +56,17 @@ function anything()
 					filtered.push( fromJson.filenames[i] );
 				}	
 			}
-			for ( var i = 0, il = filtered.length; i < il; i++ ) {
-				post( "filtered entry: " + filtered[i] + '\n' );
-			}
 			break;
+
+		//play next file in sequence
+		case "play_next":
+			if ( filtered ) {
+				outlet( 0, "open", folderPath + filtered[ playingIndex ]);
+			}
+			else {
+				post( "filtered filename list is empty" );
+				return;
+			}
+			playingIndex < filtered.length - 1 ? playingIndex++ : playingIndex = 0;
 	}
 }
