@@ -68,5 +68,21 @@ function anything()
 				return;
 			}
 			playingIndex < filtered.length - 1 ? playingIndex++ : playingIndex = 0;
+			break;
+
+		//play random file in sequence
+		case "play_random":
+			if ( filtered ) {
+				outlet( 0, "open", folderPath + filtered[ random_range( -1, filtered.length )]);
+			}
+			else {
+				post( "filtered filename list is empty" );
+				return;
+			}
+			break;
 	}
+}
+
+function random_range( upper, lower ) {
+	return Math.floor( Math.random() * ( upper - lower + 1) ) + lower;
 }
