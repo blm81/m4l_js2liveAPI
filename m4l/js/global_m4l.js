@@ -42,6 +42,16 @@ GM4L.Drunk = function( min_out, max_out ) {
 		return current_val;
 	}
 
+	GM4L.Drunk.prototype.setMinOut = function( minOut )
+	{
+		this.min_out = minOut;
+	}
+
+	GM4L.Drunk.prototype.setMaxOut = function( maxOut )
+	{
+		this.max_out = maxOut;
+	}
+
 //implementation of common easing functions
 GM4L.Easing = function( total_time, rate, start_val, end_val ) {
 	this.total_time = total_time;
