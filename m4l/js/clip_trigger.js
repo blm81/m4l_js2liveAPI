@@ -7,7 +7,8 @@ outlets = 1;
 
 var live_api = new LiveAPI( "live_set" ),
 	//random_clip =  GM4L.RandomFire( live_api, [ 2, 5, 6 ], [ 11 ] );
-	random_clips = [];
+	random_clips = [],
+	clipNames = {}; //TODO think of a better way to track duplicates here
 
 function anything()
 {
@@ -16,9 +17,7 @@ function anything()
 		event_obj = null;
 
 	switch ( args[0] ) {
-
 		case 'event':
-
 			try {
 				event_obj = JSON.parse( args[1] );
 			}
@@ -26,34 +25,26 @@ function anything()
 				post( "JSON parse exception: ", exception, '\n' );
 				return;
 			}
-			
 			switch( event_obj.type ) {
-
 				//time (meter) based events
 				case 'time_ev':
 					trigger_clip( event_obj.data );
 					break; //time_ev
 			}
-
 			break; //time_ev
-
-				//get an object with track/clip info about live set
+		//get an object with track/clip info about live set
 		case 'get_song_info':
-
 			get_song_info();
-
 			break; //get_song_info
 
 		case 'json':
-
 			handle_json( args[1] );
-
 			break; //json
 	}
 }
 
-function get_song_info() {
-
+function get_song_info() 
+{
 	var str_from_global = GM4L.get_song_info( live_api ),
 		song_info;
 
@@ -73,8 +64,8 @@ function get_song_info() {
 	}
 }
 
-function handle_json( json_in ) {
-
+function handle_json( json_in ) 
+{
 	var obj_in = null;
 
 	try {
@@ -83,18 +74,12 @@ function handle_json( json_in ) {
 	catch( exception ) {
 		post( "JSON handler exception: ", exception, '\n' );
 	}
-
 	if ( obj_in === null )
 		return;
-
 	else {
-
 		switch( obj_in.type ) {
-
 			case 'trigger':
-
 				add_trigger( obj_in.data );
-
 			break; //trigger
 		}
 	}
@@ -103,25 +88,25 @@ function handle_json( json_in ) {
 /*
 	takes an array of trigger objects: see sample_trigger_config
 */
-function add_trigger( arr_in ) {
-
+function add_trigger( arr_in ) 
+{
 	var i, il,
 		random_clip = null;
 
 	for ( i = 0, il = arr_in.length; i < il; i++ ) {
-
 		try {
-
 			//create random fire object
+			if (clipNames[arr_in[i].name]) {
+				return;
+			}
 			if ( arr_in[i].type === 'random_fire' ) {
-
+				clipNames[arr_in[i].name] = true;
 				random_clip = GM4L.RandomFire(
 					live_api,
 					arr_in[i].data.trigger,
 					arr_in[i].data.tracks,
 					arr_in[i].data.tick_range
 				);
-
 				//optional parameter for output range: don't use for random output
 				if ( arr_in[i].data.output_range !== undefined )
 					random_clip.output_range = arr_in[i].data.output_range
@@ -135,8 +120,8 @@ function add_trigger( arr_in ) {
 }
 
 //update RandomFire objects if they match current event cue
-function trigger_clip( str_cue ) {
-
+function trigger_clip( str_cue ) 
+{
 	for ( var i = 0, il = random_clips.length; i < il; i++ ) {
 		if ( random_clips[i].get_trigger() === str_cue ) {
 			random_clips[i].update();

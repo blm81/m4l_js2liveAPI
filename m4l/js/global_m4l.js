@@ -9,68 +9,86 @@
 
 GM4L = new Global("m4l");
 autowatch = 1;
+post("global m4l is loaded");
+
+GM4L.GetDateTime = function() {
+	var today = new Date();
+	var date = today.getFullYear() + "-" + (today.getMonth()+1) + "-" + today.getDate();
+	var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+	return dateTime = date + "::" + time;
+}
+
+GM4L.LogToFile = function( msgStr )
+{
+	messnamed("console", GM4L.GetDateTime() + ": " + msgStr + "\n");
+}
 
 //performs a drunk walk, arguments are min and max of output
-GM4L.Drunk = function(min_out, max_out) {
-	this.prev_val = (min_out + max_out)/2;
+GM4L.Drunk = function( min_out, max_out ) {
+	this.prev_val = ( min_out + max_out ) / 2;
 	this.min_out = min_out;
 	this.max_out = max_out;
+	this.sim_noise = new gp.SimplexNoise();
 }
 	//arguments set max and min step size
-	GM4L.Drunk.prototype.step = function(min_step, max_step) {
-		sim_noise = new gp.SimplexNoise();
-		var new_val;
-		var rand_val = sim_noise.noise(1., 1.) * (max_step - min_step + 1) + max_step;
-		if (rand_val + this.prev_val > this.min_out && rand_val + this.prev_val < this.max_out) {
-			new_val = rand_val + this.prev_val;
-		}
-		else {
-			rand_val = rand_val * -1;
-			new_val = rand_val + this.prev_val;
-		}
-		if (new_val < this.min_out) {
-			new_val = min_out;
-		}
-		else if (new_val > this.max_out) {
-			new_val = max_out;
-		}
-		this.prev_val = new_val;
-		return new_val;
+	GM4L.Drunk.prototype.step = function( min_step, max_step ) {
+		var current_val,
+			today = new Date(),
+			today_ms = today.getTime(),
+			noise = this.sim_noise.noise( today_ms, today_ms ),
+			rand_val = noise * ( max_step - min_step ) + min_step,
+			sign = noise && noise / Math.abs( noise );  //TODO move this to its own function
+		rand_val = rand_val * sign; 				    //give random val the sign of the seed
+		
+		//keep values from getting stuck at the edges of range
+        if ( rand_val + this.prev_val < this.min_out || rand_val + this.prev_val > this.max_out )
+            rand_val = rand_val * -1;
+        current_val = rand_val + this.prev_val;
+        
+        //make sure value does not exceed bounds of range
+        if ( current_val < this.min_out )
+            current_val = this.min_out;
+        else if ( current_val > this.max_out )
+            current_val = this.max_out;
+        
+        this.prev_val = current_val; //keep track of previous value
+		return current_val;
+	}
+
+	GM4L.Drunk.prototype.setMinOut = function( minOut )
+	{
+		this.min_out = minOut;
+	}
+
+	GM4L.Drunk.prototype.setMaxOut = function( maxOut )
+	{
+		this.max_out = maxOut;
 	}
 
 //implementation of common easing functions
-GM4L.Easing = function(total_time, rate) {
+GM4L.Easing = function( total_time, rate, start_val, end_val ) {
 	this.total_time = total_time;
 	this.rate = rate; //rate of bangs sent to js object
 	this.duration = Math.floor(total_time/rate);
 	this.counter = (total_time/rate) + 1;
 	this.last_map_val = 0;
+	this.start_val = start_val;
+	this.end_val = end_val;
 }
 	
-	GM4L.Easing.prototype.start_motion = function() {
+	GM4L.Easing.prototype.start = function() {
 		this.counter = 0;
 	}
 	
-	//set start val and end val
-	GM4L.Easing.prototype.set_start_val = function(start_val) {
-		var sv = start_val;
-		return sv;
-	}
-	
-	GM4L.Easing.prototype.set_end_val = function(end_val) {
-		var ev = end_val;
-		return ev;
-	}
-	
 	//arguments: easing_function(counter/duration, start_val, end_val), end val
-	GM4L.Easing.prototype.move = function(easing_function, end_val) {
+	GM4L.Easing.prototype.move = function( easing_function ) {
 		var mapped_value;
 		if (this.counter < this.duration) {
-			var mapped_value = easing_function;
+			mapped_value = easing_function( this.counter / this.duration, this.start_val, this.end_val );
 			this.counter ++;
 		}
 		else if (this.counter == this.duration) {
-			mapped_value = end_val;
+			mapped_value = this.end_val;
 			this.last_map_val = mapped_value;
 		}
 		else {
@@ -218,7 +236,6 @@ GM4L.ParamChange = function( device ) {
 	@param out_range: 	{array} 	optional *breaks random track* output range low [0] high [1]
 */
 GM4L.RandomFire = function( api_obj, trigger, tracks, tick_range, output_range ) {
-
 	var _counter = 0,
 		_ticks,
 		_output,
@@ -228,7 +245,6 @@ GM4L.RandomFire = function( api_obj, trigger, tracks, tick_range, output_range )
 	set_all();
 
 	function set_ticks() {
-
 		if ( tick_range[1] === undefined )
 			_ticks = tick_range[0];
 		else 
@@ -279,8 +295,7 @@ GM4L.RandomFire = function( api_obj, trigger, tracks, tick_range, output_range )
 	}
 
 	function update() {
-
-		if( ++_counter === _ticks ) {
+		if( _counter === _ticks ) {
 			//select and fire clip
 			api_obj.goto( "live_set tracks " + _track + " clip_slots " + _output );
 			api_obj.call( "fire" );
@@ -288,6 +303,7 @@ GM4L.RandomFire = function( api_obj, trigger, tracks, tick_range, output_range )
 			set_all();
 			_counter = 0;
 		}
+		_counter++;
 	}
 
 	//get random int within a specified range
