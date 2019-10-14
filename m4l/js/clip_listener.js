@@ -13,6 +13,7 @@ function clipTriggerListener( args )
 	/** output object : 
 		type = String
 		data object : event = String
+			name : live track name
 			slotNum : num, number of playing slot
 	*/				 
 	var objOut = {
@@ -28,11 +29,13 @@ function clipTriggerListener( args )
 		case -2: 
 			post( "clip off" + '\n' );
 			objOut.data.event = "clip_off";
+			objOut.data.name = trackObserver.get( "name" )[0];
 			outlet( 1, "bang" );
 			break;
 		default:
 			post( "clip on: " + argArr[1] + '\n' );
 			objOut.data.event = "clip_on";
+			objOut.data.name = trackObserver.get( "name" )[0];
 			objOut.data.slotNum = argArr[1];
 			outlet( 0, argArr[1] );
 			break;
